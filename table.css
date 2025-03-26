@@ -1,0 +1,54 @@
+body {
+    font-family: 'Orbitron', sans-serif;
+    background: #111;
+    color: #ffe600;
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  form {
+    margin-bottom: 20px;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00f6ff;
+  }
+  
+  form input, form textarea {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    background: #000;
+    color: #ffe600;
+    border: 2px solid #444;
+    border-radius: 5px;
+  }
+  
+  form button {
+    padding: 10px 20px;
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #333;
+    color: #fff;
+    box-shadow: 0 0 10px #00f6ff;
+  }
+  
+  th, td {
+    padding: 12px;
+    border: 1px solid #444;
+    text-align: center;
+  }
+  
