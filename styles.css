@@ -145,3 +145,13 @@ body.decepticon-theme .login-container {
     filter: blur(0);
   }
 }
+
+.live-clock {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  color: #ffe600;
+  text-shadow: 0 0 5px #ff0000;
+}
