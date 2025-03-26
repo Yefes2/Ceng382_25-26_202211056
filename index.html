@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformers Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <div class="logo-toggle" id="logoToggle">
+      <img src="images/Autobots-Logo.png" alt="Autobot" class="logo front">
+      <img src="images/Decepticon-Logo.png" alt="Decepticon" class="logo back">
+    </div>
+  </div>
+
+  <!-- Background Overlay for Smooth GIF Transition -->
+  <div class="bg-overlay" id="bgOverlay"></div>
+
+  <!-- Login Container -->
+  <div class="login-container">
+    <h1 class="logo-text">TRANSFORMERS</h1>
+    <form class="login-form">
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+
+  <!-- Audio -->
+  <audio id="autobotTheme" src="sounds/The Touch - Stan Bush (HD Restoration).mp3" loop></audio>
+  <audio id="decepticonTheme" src="sounds/Instruments of Destruction.mp3" loop></audio>
+  <audio id="toggleSfx" src="sounds/Transformers Transition.mp3"></audio>
+
+  <!-- Script -->
+  <script>
+    const toggle = document.getElementById('logoToggle');
+    const body = document.body;
+    const sfx = document.getElementById('toggleSfx');
+    const overlay = document.getElementById('bgOverlay');
+    const autobotTheme = document.getElementById('autobotTheme');
+    const decepticonTheme = document.getElementById('decepticonTheme');
+
+    let isDecepticon = false;
+
+    function fadeAudio(audio, toVolume, duration) {
+      const step = 0.02;
+      const direction = toVolume > audio.volume ? 1 : -1;
+      const interval = setInterval(() => {
+        audio.volume = Math.max(0, Math.min(1, audio.volume + step * direction));
+        if ((direction === 1 && audio.volume >= toVolume) ||
+            (direction === -1 && audio.volume <= toVolume)) {
+          clearInterval(interval);
+        }
+      }, duration * step);
+    }
+
+    function switchTheme() {
+      overlay.style.opacity = 0;
+
+      setTimeout(() => {
+        isDecepticon = !isDecepticon;
+
+        if (isDecepticon) {
+          body.classList.remove('autobot-theme');
+          body.classList.add('decepticon-theme');
+          overlay.style.backgroundImage = url('decepticon.gif');
+
+          fadeAudio(autobotTheme, 0, 0.5);
+          setTimeout(() => {
+            autobotTheme.pause();
+            autobotTheme.currentTime = 0;
+            decepticonTheme.volume = 0;
+            decepticonTheme.play();
+            fadeAudio(decepticonTheme, 0.4, 1);
+          }, 300);
+        } else {
+          body.classList.remove('decepticon-theme');
+          body.classList.add('autobot-theme');
+          overlay.style.backgroundImage = "url('autobot.gif')";
+
+          fadeAudio(decepticonTheme, 0, 0.5);
+          setTimeout(() => {
+            decepticonTheme.pause();
+            decepticonTheme.currentTime = 0;
+            autobotTheme.volume = 0;
+            autobotTheme.play();
+            fadeAudio(autobotTheme, 0.4, 1);
+          }, 300);
+        }
+
+        overlay.style.opacity = 1;
+        sfx.currentTime = 0;
+        sfx.play();
+      }, 400);
+    }
+
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('flipped');
+      switchTheme();
+    });
+
+    window.onload = () => {
+      body.classList.add('autobot-theme');
+      overlay.style.backgroundImage = "url('autobot.gif')";
+      autobotTheme.volume = 0.4;
+      autobotTheme.play();
+    };
+  </script>
+</body>
+</html>
