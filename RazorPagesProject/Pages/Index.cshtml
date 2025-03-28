@@ -1,0 +1,33 @@
+﻿@page
+@model RazorPagesProject.Pages.IndexModel
+@{
+    ViewData["Title"] = "Class Information";
+}
+
+<h1>Add Class</h1>
+
+<form method="post">
+    <label>Class Name:</label>
+    <input asp-for="NewClass.ClassName" /><br>
+
+    <label>Student Count:</label>
+    <input asp-for="NewClass.StudentCount" type="number" /><br>
+
+    <label>Description:</label>
+    <textarea asp-for="NewClass.Description"></textarea><br>
+
+    <button type="submit">Add</button>
+</form>
+
+<hr />
+
+<h2>Class List</h2>
+<ul>
+@foreach (var item in Model.ClassList)
+{
+    <li>
+        <strong>@item.ClassName</strong> - @item.StudentCount students<br/>
+        @item.Description
+    </li>
+}
+</ul>
