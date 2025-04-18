@@ -9,74 +9,56 @@ namespace RazorPagesProject.Pages
 {
     public class IndexModel : PageModel
     {
-        public List<ClassInformationModel> ClassList { get; set; } = new();
+        private static List<ClassInformationModel> AllClasses = new(); // source data
 
-        [BindProperty]
-        public ClassInformationModel NewClass { get; set; }
+        public List<ClassInformationTable> DisplayClasses { get; set; } = new();
+        public string FilterKeyword { get; set; }
 
-        public bool IsEditMode { get; set; } = false;
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        private const int PageSize = 10;
 
-        public void OnGet(){}
-
-        public IActionResult OnPostAdd()
+        public void OnGet(string filterKeyword, int currentPage = 1)
         {
-            if (!ModelState.IsValid)
+            FilterKeyword = filterKeyword;
+            CurrentPage = currentPage;
+
+            if (AllClasses.Count == 0)
             {
-                return Page();
-            }
-
-            ClassList.Add(new ClassInformationModel
-            {
-                ClassName = NewClass.ClassName,
-                StudentCount = NewClass.StudentCount,
-                Description = NewClass.Description
-            });
-
-            return RedirectToPage();
-        }
-
-        public IActionResult OnPostDelete(int id){
-            var classToDelete = ClassList.FirstOrDefault(c => c.Id == id);
-            if (classToDelete != null)
-            {
-                ClassList.Remove(classToDelete);
-                
-            }
-
-            return RedirectToPage();
-        }
-
-        public IActionResult OnPostEditRequest(int id){
-            var item = ClassList.FirstOrDefault(c => c.Id == id);
-            if (item != null)
-            {
-                NewClass = new ClassInformationModel
+                // Populate synthetic data only once
+                for (int i = 1; i <= 100; i++)
                 {
-                    Id = item.Id,
-                    ClassName = item.ClassName,
-                    StudentCount = item.StudentCount,
-                    Description = item.Description
-                };
-                IsEditMode = true;
+                    AllClasses.Add(new ClassInformationModel
+                    {
+                        ClassName = $"Sample Class {i}",
+                        StudentCount = i % 30 + 1,
+                        Description = $"Description for class {i}"
+                    });
+                }
             }
-            return Page();
-        }
 
-        public IActionResult OnPostEdit()
-        {
-            if (!ModelState.IsValid)
-                return Page();
+            // Apply filtering (if any)
+            var filtered = string.IsNullOrWhiteSpace(filterKeyword)
+                ? AllClasses
+                : AllClasses.Where(c => c.ClassName.Contains(filterKeyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
 
-            var item = ClassList.FirstOrDefault(x => x.Id == NewClass.Id);
-            if (item != null)
+            // Calculate total pages
+            TotalPages = (int)System.Math.Ceiling((double)filtered.Count / PageSize);
+
+            // Paginate the result
+            var paged = filtered
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            // Map to table model
+            DisplayClasses = paged.Select(c => new ClassInformationTable
             {
-                item.ClassName = NewClass.ClassName;
-                item.StudentCount = NewClass.StudentCount;
-                item.Description = NewClass.Description;
-            }
-
-            return RedirectToPage();
+                Id = c.Id,
+                ClassName = c.ClassName,
+                StudentCount = c.StudentCount,
+                Description = c.Description
+            }).ToList();
         }
-        
     }
 }

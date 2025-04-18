@@ -1,33 +1,49 @@
-﻿@page
-@model RazorPagesProject.Pages.IndexModel
-@{
-    ViewData["Title"] = "Class Information";
-}
-
-<h1>Add Class</h1>
-
-<form method="post">
-    <label>Class Name:</label>
-    <input asp-for="NewClass.ClassName" /><br>
-
-    <label>Student Count:</label>
-    <input asp-for="NewClass.StudentCount" type="number" /><br>
-
-    <label>Description:</label>
-    <textarea asp-for="NewClass.Description"></textarea><br>
-
-    <button type="submit">Add</button>
+﻿<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="filterKeyword" value="@Model.FilterKeyword" class="form-control" placeholder="Filter by class name" />
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
 </form>
 
-<hr />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Class Name</th>
+            <th>Student Count</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DisplayClasses)
+        {
+            <tr>
+                <td>@item.ClassName</td>
+                <td>@item.StudentCount</td>
+                <td>@item.Description</td>
+                <td>
+                    <form method="post" asp-page-handler="EditRequest">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-warning">Edit</button>
+                    </form>
+                    <form method="post" asp-page-handler="Delete">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-<h2>Class List</h2>
-<ul>
-@foreach (var item in Model.ClassList)
-{
-    <li>
-        <strong>@item.ClassName</strong> - @item.StudentCount students<br/>
-        @item.Description
-    </li>
-}
-</ul>
+<!-- Pagination Controls -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" href="?filterKeyword=@Model.FilterKeyword&currentPage=@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
