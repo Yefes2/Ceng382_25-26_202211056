@@ -5,6 +5,33 @@
     </div>
 </form>
 
+<form method="get" asp-page-handler="Export">
+    <input type="hidden" name="filterKeyword" value="@Model.FilterKeyword" />
+    <input type="hidden" name="exportMode" value="filtered" />
+    <button type="submit" class="btn btn-success me-2">Export Filtered JSON</button>
+</form>
+
+<form method="get" asp-page-handler="Export">
+    <input type="hidden" name="exportMode" value="unfiltered" />
+    <button type="submit" class="btn btn-outline-success">Export All JSON</button>
+</form>
+
+<form method="get">
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="selectedColumns" value="ClassName" checked />
+        <label class="form-check-label">Class Name</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="selectedColumns" value="StudentCount" checked />
+        <label class="form-check-label">Student Count</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="selectedColumns" value="Description" checked />
+        <label class="form-check-label">Description</label>
+    </div>
+    <button type="submit" class="btn btn-secondary" asp-page-handler="Export">Export Selected</button>
+</form>
+
 <table class="table table-bordered">
     <thead>
         <tr>

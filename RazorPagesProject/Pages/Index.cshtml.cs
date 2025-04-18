@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using RazorPagesProject.Models;
+using RazorPagesProject.Helpers;  
 using System.Collections.Generic;
 using System.Linq;
-
 
 namespace RazorPagesProject.Pages
 {
@@ -25,7 +25,6 @@ namespace RazorPagesProject.Pages
 
             if (AllClasses.Count == 0)
             {
-                // Populate synthetic data only once
                 for (int i = 1; i <= 100; i++)
                 {
                     AllClasses.Add(new ClassInformationModel
@@ -37,7 +36,6 @@ namespace RazorPagesProject.Pages
                 }
             }
 
-            // Apply filtering (if any)
             var filtered = string.IsNullOrWhiteSpace(filterKeyword)
                 ? AllClasses
                 : AllClasses.Where(c => c.ClassName.Contains(filterKeyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
@@ -45,7 +43,6 @@ namespace RazorPagesProject.Pages
             // Calculate total pages
             TotalPages = (int)System.Math.Ceiling((double)filtered.Count / PageSize);
 
-            // Paginate the result
             var paged = filtered
                 .Skip((CurrentPage - 1) * PageSize)
                 .Take(PageSize)
@@ -59,6 +56,35 @@ namespace RazorPagesProject.Pages
                 StudentCount = c.StudentCount,
                 Description = c.Description
             }).ToList();
+        }
+
+        public IActionResult OnGetExport(string exportMode, string filterKeyword, List<string> selectedColumns)
+        {
+            var source = (exportMode == "filtered")
+                ? GetFilteredData(filterKeyword)
+                : AllClasses;
+
+            var tableData = source.Select(c => new ClassInformationTable
+            {
+                Id = c.Id,
+                ClassName = c.ClassName,
+                StudentCount = c.StudentCount,
+                Description = c.Description
+            }).ToList();
+
+            string json = Utils.Instance.ExportToJson(tableData, selectedColumns);
+            byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
+
+            return File(jsonBytes, "application/json", $"export_{exportMode}.json");
+        }
+
+        private List<ClassInformationModel> GetFilteredData(string keyword)
+        {
+            return string.IsNullOrWhiteSpace(keyword)
+                ? AllClasses
+                : AllClasses.Where(c =>
+                    c.ClassName.Contains(keyword, System.StringComparison.OrdinalIgnoreCase))
+                    .ToList();
         }
     }
 }
