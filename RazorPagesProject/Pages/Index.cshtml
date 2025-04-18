@@ -1,76 +1,95 @@
 ﻿<form method="get" class="mb-3">
-    <div class="input-group">
-        <input type="text" name="filterKeyword" value="@Model.FilterKeyword" class="form-control" placeholder="Filter by class name" />
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </div>
+  <div class="input-group">
+    <input 
+      type="text" 
+      name="filterKeyword" 
+      value="@Model.FilterKeyword" 
+      class="form-control" 
+      placeholder="Filter by class name" />
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </div>
 </form>
 
-<form method="get" asp-page-handler="Export">
+<div class="d-flex align-items-center mb-3">
+  <form method="get" asp-page-handler="Export" class="d-flex align-items-center flex-wrap">
     <input type="hidden" name="filterKeyword" value="@Model.FilterKeyword" />
-    <input type="hidden" name="exportMode" value="filtered" />
-    <button type="submit" class="btn btn-success me-2">Export Filtered JSON</button>
-</form>
 
-<form method="get" asp-page-handler="Export">
-    <input type="hidden" name="exportMode" value="unfiltered" />
-    <button type="submit" class="btn btn-outline-success">Export All JSON</button>
-</form>
+    <div class="form-check form-check-inline me-3">
+      <input class="form-check-input" type="checkbox" name="selectedColumns" value="ClassName" checked />
+      <label class="form-check-label">Class Name</label>
+    </div>
+    <div class="form-check form-check-inline me-3">
+      <input class="form-check-input" type="checkbox" name="selectedColumns" value="StudentCount" checked />
+      <label class="form-check-label">Student Count</label>
+    </div>
+    <div class="form-check form-check-inline me-4">
+      <input class="form-check-input" type="checkbox" name="selectedColumns" value="Description" checked />
+      <label class="form-check-label">Description</label>
+    </div>
 
-<form method="get">
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="selectedColumns" value="ClassName" checked />
-        <label class="form-check-label">Class Name</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="selectedColumns" value="StudentCount" checked />
-        <label class="form-check-label">Student Count</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="selectedColumns" value="Description" checked />
-        <label class="form-check-label">Description</label>
-    </div>
-    <button type="submit" class="btn btn-secondary" asp-page-handler="Export">Export Selected</button>
-</form>
+    <button 
+      type="submit" 
+      name="exportMode" 
+      value="filtered" 
+      class="btn btn-success me-2">
+      Export Filtered JSON
+    </button>
+    <button 
+      type="submit" 
+      name="exportMode" 
+      value="unfiltered" 
+      class="btn btn-outline-success">
+      Export All JSON
+    </button>
+  </form>
+
+  <form method="post" asp-page-handler="Logout" class="ms-auto">
+    <button type="submit" class="btn btn-link">Logout</button>
+  </form>
+</div>
 
 <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Class Name</th>
-            <th>Student Count</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.DisplayClasses)
-        {
-            <tr>
-                <td>@item.ClassName</td>
-                <td>@item.StudentCount</td>
-                <td>@item.Description</td>
-                <td>
-                    <form method="post" asp-page-handler="EditRequest">
-                        <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-sm btn-warning">Edit</button>
-                    </form>
-                    <form method="post" asp-page-handler="Delete">
-                        <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
+  <thead>
+    <tr>
+      <th>Class Name</th>
+      <th>Student Count</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.DisplayClasses)
+    {
+      <tr>
+        <td>@item.ClassName</td>
+        <td>@item.StudentCount</td>
+        <td>@item.Description</td>
+        <td>
+          <form method="post" asp-page-handler="EditRequest" class="d-inline">
+            <input type="hidden" name="id" value="@item.Id" />
+            <button type="submit" class="btn btn-sm btn-warning">Edit</button>
+          </form>
+          <form method="post" asp-page-handler="Delete" class="d-inline">
+            <input type="hidden" name="id" value="@item.Id" />
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>
 
-<!-- Pagination Controls -->
 <nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a class="page-link" href="?filterKeyword=@Model.FilterKeyword&currentPage=@i">@i</a>
-            </li>
-        }
-    </ul>
+  <ul class="pagination">
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+      <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+        <a 
+          class="page-link" 
+          href="?filterKeyword=@Model.FilterKeyword&currentPage=@i">
+          @i
+        </a>
+      </li>
+    }
+  </ul>
 </nav>

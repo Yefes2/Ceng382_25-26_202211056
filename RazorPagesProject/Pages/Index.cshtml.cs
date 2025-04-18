@@ -4,6 +4,8 @@ using RazorPagesProject.Models;
 using RazorPagesProject.Helpers;  
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
+
 
 namespace RazorPagesProject.Pages
 {
@@ -86,5 +88,35 @@ namespace RazorPagesProject.Pages
                     c.ClassName.Contains(keyword, System.StringComparison.OrdinalIgnoreCase))
                     .ToList();
         }
+
+        public override void OnPageHandlerExecuting(PageHandlerExecutingContext context)
+        {
+            var sessionToken = HttpContext.Session.GetString("token");
+            var cookieToken  = Request.Cookies["token"];
+            var sessionUser  = HttpContext.Session.GetString("username");
+            var cookieUser   = Request.Cookies["username"];
+            var sessionId    = HttpContext.Session.GetString("session_id");
+            var cookieSessId = Request.Cookies["session_id"];
+
+            if (sessionToken != cookieToken
+                || sessionUser != cookieUser
+                || sessionId != cookieSessId)
+            {
+                context.Result = RedirectToPage("/Login");
+            }
+
+            base.OnPageHandlerExecuting(context);
+        }
+
+        public IActionResult OnPostLogout()
+            {
+                HttpContext.Session.Clear();
+
+                Response.Cookies.Delete("username");
+                Response.Cookies.Delete("token");
+                Response.Cookies.Delete("session_id");
+
+                return RedirectToPage("/Login");
+            }
     }
 }
