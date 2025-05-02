@@ -1,0 +1,25 @@
+@page
+@model RazorPagesProject.Pages.Classes.CreateModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Add New Class</h2>
+<form method="post">
+  <div class="mb-3">
+    <label asp-for="ClassItem.Name" class="form-label"></label>
+    <input asp-for="ClassItem.Name" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label asp-for="ClassItem.PersonCount" class="form-label"></label>
+    <input asp-for="ClassItem.PersonCount" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label asp-for="ClassItem.Description" class="form-label"></label>
+    <textarea asp-for="ClassItem.Description" class="form-control"></textarea>
+  </div>
+  <div class="form-check mb-3">
+    <input asp-for="ClassItem.IsActive" class="form-check-input" />
+    <label asp-for="ClassItem.IsActive" class="form-check-label"></label>
+  </div>
+  <button type="submit" class="btn btn-success">Create</button>
+  <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>

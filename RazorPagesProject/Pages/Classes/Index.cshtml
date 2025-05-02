@@ -1,0 +1,30 @@
+@page
+@model RazorPagesProject.Pages.Classes.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Classes</h2>
+<p><a asp-page="Create" class="btn btn-primary">Add New Class</a></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Id</th><th>Name</th><th>Person Count</th><th>Description</th><th>Active?</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var item in Model.ClassList)
+  {
+    <tr>
+      <td>@item.Id</td>
+      <td>@item.Name</td>
+      <td>@item.PersonCount</td>
+      <td>@item.Description</td>
+      <td>@(item.IsActive ? "Yes" : "No")</td>
+      <td>
+        <a asp-page="Edit"   asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+        <a asp-page="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+  }
+  </tbody>
+</table>

@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using RazorPagesProject.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// (existing razor pages setup)
 builder.Services.AddRazorPages();
 
 // 1) Enable sessions
@@ -11,6 +13,13 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
+
+// 2) Add DbContext with SQL Server
+builder.Services.AddDbContext<SchoolDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("SchoolDbConnection")
+    )
+);
 
 var app = builder.Build();
 
